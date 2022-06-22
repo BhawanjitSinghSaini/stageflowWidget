@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>nvRecordStages</name>
+        <script><![CDATA[function nvRecordStages(getTemplateUrl) {
+	'use strict';
+
+	function orderComp(ele1, ele2) {
+		if (ele1.order < ele2.order) return -1;
+		if (ele2.order < ele1.order) return 1;
+		return 0;
+	}
+
+	function fetchCurrentOrder(stateArr, curVal) {
+		for (var i in stateArr) {
+			if (stateArr[i].value == curVal) {
+				return parseInt(stateArr[i].order);
+			}
+		}
+
+		return "";
+	}
+
+	return {
+		restrict: "E",
+		replace: true,
+		template: '<div class="record_stage">'+
+		'<div ng-if="menu.length>0" ng-style="menuItem.style" ng-repeat="menuItem in menu" ng-class="menuItem.css_class_name" ng-click="menuItem.f(menuItem)" uib-tooltip="{{menuItem.tooltip}}" tooltip-placement="{{menuItem.tooltip_placement}}">'+
+		'<div class="menu-text" ng-bind-html="menuItem.label"></div>'+
+		'</div>'+
+		'<div ng-if="menu.length==0" class="alert alert-light"> <span class="icon  icon-error-circle"> </span> {{error_message}} </div>'+
+		'</div>',
+		scope: {
+			config: "=",
+			action: "="
+		},
+		controller: function ($scope,$sce,$timeout) {
+			$scope.menu = [];
+			$scope.error_message ="Loading...";
+
+			function updateConfig(){
+				if (
+					$scope.config.stage_config &&
+					$scope.config.current_stage &&
+					$scope.config.current_stage != "" &&
+					$scope.config.stage_config.stages &&
+					$scope.config.stage_config.stages.length > 0
+				) {
+					var completeIndicator = "";
+					var deriveFromMapping = false;
+					var currentState = "";
+					var currentOrder = "";
+
+					var states = $scope.config.stage_config.stages;
+					states.sort(orderComp);
+
+					currentState = $scope.config.current_stage;
+
+					currentOrder = fetchCurrentOrder(states, currentState);
+
+					for (var i in states) {
+						var obj = states[i];
+						obj.f = $scope.action;
+						if (states[i].order < currentOrder) {
+							obj.is_completed = true;
+							obj.is_current = false;
+							obj.css_class_name = "completed_step";
+							obj.label = states[i].label;
+						}
+
+						if (states[i].order == currentOrder) {
+							obj.is_completed = false;
+							obj.is_current = true;
+							obj.css_class_name = "active_step";
+						}
+						if (states[i].order > currentOrder) {
+							obj.is_completed = false;
+							obj.is_current = false;
+							obj.css_class_name = "step";
+						}
+
+						$scope.menu.push(obj);
+					}
+				}
+			}
+
+			$scope.$watch('config',function() {
+				$scope.menu = [];
+				
+				$timeout(function(){
+					updateConfig();
+				},1);
+				
+			});
+
+		}
+	};
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-06-22 06:26:04</sys_created_on>
+        <sys_id>f0bd076447501110bb639a62736d43c1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>nvRecordStages</sys_name>
+        <sys_package display_value="Stage Flow" source="x_234274_stage_f_0">40fc872447501110bb639a62736d43c5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Stage Flow">40fc872447501110bb639a62736d43c5</sys_scope>
+        <sys_update_name>sp_angular_provider_f0bd076447501110bb639a62736d43c1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-06-22 06:26:04</sys_updated_on>
+        <type>directive</type>
+    </sp_angular_provider>
+</record_update>

@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function($scope,$rootScope) {
+	/* widget controller */
+	var c = this;
+
+	var stageTimeout;
+	$scope.wf_config = $scope.data.config;
+console.log($scope.wf_config);
+	$rootScope.$on("stageUpdated",function(){
+		c.server.update().then(function(r){
+			$scope.wf_config = r.config;
+		});
+	});
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/*Process flow formatter css START*/
+
+.menu_text{
+font-family: SourceSansPro;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  max-width:20px;
+
+}
+
+
+/*.container {
+	width: 100%;
+	margin: 0 auto;
+}*/
+
+
+/*completed step CSS*/
+
+
+.record_stage .completed_step {
+	font-size: 1.2rem;
+	text-align: center;
+	cursor: default;
+	margin: 0 3px 5px;
+	padding: 1.2rem 1.2rem 1.2rem 2.4rem;
+	min-width: 10%;
+	float: left;
+	position: relative;
+	background-color: #0d6efd;
+  color:#FFF;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none; 
+  transition: background-color 0.2s ease;
+}
+
+.record_stage .completed_step:after,
+.record_stage .completed_step:before {
+	content: " ";
+	position: absolute;
+	top: 0;
+	right: -2rem;
+	width: 0;
+	height: 0;
+	border-top: 2rem solid transparent;
+	border-bottom: 2rem solid transparent;
+	border-left: 2rem solid #0d6efd;	
+	z-index: 2;
+  transition: border-color 0.2s ease;
+}
+
+.record_stage .completed_step:before {
+	right: auto;
+	left: 0;
+	border-left: 2rem solid #fff;	
+	z-index: 0;
+}
+
+.record_stage .completed_step:first-child:before {
+	border: none;
+}
+
+.record_stage .completed_step:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.record_stage .completed_step span {
+	position: relative;
+}
+
+.record_stage .completed_step span:before {
+	opacity: 0;
+	content: "✔";
+	position: absolute;
+	top: -2px;
+	left: -20px;
+}
+
+.record_stage .completed_step.done span:before {
+	opacity: 1;
+	-webkit-transition: opacity 0.3s ease 0.5s;
+	-moz-transition: opacity 0.3s ease 0.5s;
+	-ms-transition: opacity 0.3s ease 0.5s;
+	transition: opacity 0.3s ease 0.5s;
+}
+
+.record_stage .completed_step.current {
+	color: #fff;
+	background-color: #23468c;
+}
+
+.record_stage .completed_step.current:after {
+	border-left: 17px solid #23468c;	
+}
+
+/*Current Step CSS*/
+.record_stage .active_step {
+	font-size: 1.2rem;
+	text-align: center;
+	color: #FFF;
+	cursor: default;
+	margin: 0 3px 5px;
+	padding: 1.2rem 1.2rem 1.2rem 2.4rem;
+	min-width: 10%;
+	float: left;
+	position: relative;
+	background-color: #198754;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none; 
+  transition: background-color 0.2s ease;
+}
+
+.record_stage .active_step:after,
+.record_stage .active_step:before {
+	content: " ";
+	position: absolute;
+	top: 0;
+	right: -2rem;
+	width: 0;
+	height: 0;
+	border-top: 2rem solid transparent;
+	border-bottom: 2rem solid transparent;
+	border-left: 2rem solid #198754;	
+	z-index: 2;
+  transition: border-color 0.2s ease;
+}
+
+.record_stage .active_step:before {
+	right: auto;
+	left: 0;
+	border-left: 2rem solid #fff;	
+	z-index: 0;
+}
+
+.record_stage .active_step:first-child:before {
+	border: none;
+}
+
+.record_stage .active_step:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.record_stage .active_step span {
+	position: relative;
+}
+
+.record_stage .active_step span:before {
+	opacity: 0;
+	content: "✔";
+	position: absolute;
+	top: -2px;
+	left: -20px;
+}
+
+.record_stage .active_step.done span:before {
+	opacity: 1;
+	-webkit-transition: opacity 0.3s ease 0.5s;
+	-moz-transition: opacity 0.3s ease 0.5s;
+	-ms-transition: opacity 0.3s ease 0.5s;
+	transition: opacity 0.3s ease 0.5s;
+}
+
+.record_stage .active_step.current {
+	color: #fff;
+	background-color: #23468c;
+}
+
+.record_stage .active_step.current:after {
+	border-left: 17px solid #23468c;	
+}
+
+
+
+
+
+/* to be step css */
+
+.record_stage .step {
+	font-size: 1.2rem;
+	text-align: center;
+	color: #666;
+	cursor: default;
+	margin: 0 3px 5px;
+	padding: 1.2rem 1.2rem 1.2rem 2.4rem;
+	min-width: 10%;
+	float: left;
+	position: relative;
+	background-color: #ededed;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none; 
+  transition: background-color 0.2s ease;
+}
+
+.record_stage .step:after,
+.record_stage .step:before {
+	content: " ";
+	position: absolute;
+	top: 0;
+	right: -2rem;
+	width: 0;
+	height: 0;
+	border-top: 2rem solid transparent;
+	border-bottom: 2rem solid transparent;
+	border-left: 2rem solid #ededed;	
+	z-index: 2;
+  transition: border-color 0.2s ease;
+}
+
+.record_stage .step:before {
+	right: auto;
+	left: 0;
+	border-left: 2rem solid #fff;	
+	z-index: 0;
+}
+
+.record_stage .step:first-child:before {
+	border: none;
+}
+
+.record_stage .step:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.record_stage .step span {
+	position: relative;
+}
+
+.record_stage .step span:before {
+	opacity: 0;
+	content: "✔";
+	position: absolute;
+	top: -2px;
+	left: -20px;
+}
+
+.record_stage .step.done span:before {
+	opacity: 1;
+	-webkit-transition: opacity 0.3s ease 0.5s;
+	-moz-transition: opacity 0.3s ease 0.5s;
+	-ms-transition: opacity 0.3s ease 0.5s;
+	transition: opacity 0.3s ease 0.5s;
+}
+
+.record_stage .step.current {
+	color: #fff;
+	background-color: #23468c;
+}
+
+.record_stage .step.current:after {
+	border-left: 17px solid #23468c;	
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>stage_flow</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+  
+}]]></link>
+        <name>Stage flow</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	/* populate the 'data' object */
+	/* e.g., data.table = $sp.getValue('table'); */
+
+	data.config = {
+		"current_stage":"",
+		"stage_config":{
+			"stages":[]
+		}
+	};
+
+	/*var tid = $sp.getParameter("sysparm_sys_id");
+	
+	if(!tid)
+		return;
+		*/
+
+	var query = 'active=true^sys_id=d71f7935c0a8016700802b64c67c11c6';
+
+	var incgr = new GlideRecord('incident');
+	incgr.addEncodedQuery(query);
+	incgr.setLimit(1);
+	incgr.query();
+
+	if(incgr.next()){
+$sp.log(incgr.getValue('state'));
+		data.config.current_stage = incgr.getValue('state');
+		
+		var choiceGr = new GlideRecord("sys_choice");
+		choiceGr.addEncodedQuery("nameSTARTSWITHincident^inactive=false^element=state");
+		choiceGr.orderBy("sequence");
+		choiceGr.query();
+		
+		while(choiceGr.next()){
+
+			var obj = {
+				"label":choiceGr.getDisplayValue("label"),
+				"value":choiceGr.getDisplayValue("value"),
+				"tooltip":choiceGr.getDisplayValue("label"),
+				"tooltip_placement":"bottom",
+				"order":parseInt(choiceGr.getValue("sequence")),
+				"is_completed":false,
+				"is_current":false,
+				"css_class_name":""
+			};
+
+			if(data.config.current_stage == obj.value){
+				obj.is_current = true;
+			}
+
+			data.config.stage_config.stages.push(obj);
+		}
+	}
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-06-22 06:25:29</sys_created_on>
+        <sys_id>301d8b2447501110bb639a62736d43fe</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>Stage flow</sys_name>
+        <sys_package display_value="Stage Flow" source="x_234274_stage_f_0">40fc872447501110bb639a62736d43c5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Stage Flow">40fc872447501110bb639a62736d43c5</sys_scope>
+        <sys_update_name>sp_widget_301d8b2447501110bb639a62736d43fe</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-06-22 06:46:24</sys_updated_on>
+        <template><![CDATA[<div>
+<nv_record_stages config="wf_config"></nv_record_stages>
+</div>]]></template>
+    </sp_widget>
+</record_update>
